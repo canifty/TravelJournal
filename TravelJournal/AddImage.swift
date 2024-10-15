@@ -19,6 +19,7 @@ struct AddImage: View {
             .padding()
             // Display the selected image if it exists
             if let image = selectedImage {
+                Text("bshgd")
                 Image(uiImage: image)
                     .resizable()
                     .scaledToFill()
