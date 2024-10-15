@@ -10,7 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @State var showFolderSheet: Bool = false // State variable to control the display of the sheet for adding folders
     @State var dataArray: [(String, UIImage?)] = [] // Array to store folder names and their corresponding images
-    @State var selectedFolder: (String, UIImage?)? = nil // To store the selected folder
+    
     
     var body: some View {
         /*       Define the color constant
@@ -45,9 +45,6 @@ struct ContentView: View {
                                 .padding()
                                 .cornerRadius(10)
                         }
-                        .onTapGesture {
-                                                   selectedFolder = data  // Set the selected folder
-                                               }
                     }
                     .scrollContentBackground(.hidden)
                     .background(Color.clear)
@@ -70,12 +67,6 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("My Journeys")
-            // Navigate to new view when a folder is selected
-                        .navigationDestination(isPresented: .constant(selectedFolder != nil), destination: {
-                            if let selectedFolder = selectedFolder {
-                                FolderDetailView(folder: selectedFolder)
-                            }
-                        })
         }
         // Show the FolderAddButton sheet to allow users to add a folder
         .sheet(isPresented: $showFolderSheet) {
