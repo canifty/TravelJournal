@@ -22,9 +22,7 @@ struct FolderDetailView: View {
                     .foregroundColor(.gray.opacity(0.4))
                     .cornerRadius(20)
             }
-            
-            
-            
+
             Spacer()
         }
         .navigationTitle("Folder Details")
