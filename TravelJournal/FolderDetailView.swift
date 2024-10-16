@@ -6,6 +6,12 @@ struct FolderDetailView: View {
     @State var dataArray: [(String, UIImage?)] = [] // Array to store folder names and their corresponding images
     
     var body: some View {
+        ZStack {
+            LinearGradient(
+                gradient: Gradient(colors: [Color(red: 143/255, green: 193/255, blue: 181/255).opacity(1), Color.white]),
+                startPoint: .top,
+                endPoint: .bottom
+            ).ignoresSafeArea()
             VStack {
                 Spacer()
                 
@@ -27,16 +33,20 @@ struct FolderDetailView: View {
                             }
                             Text(file.0)
                         }
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
                     }
                     .scrollContentBackground(.hidden)
                     .background(Color.clear)
                 }
+                
                 Button {
                     showFileEditPage.toggle()
                 } label: {
                     Image(systemName: "plus.circle.fill")
                 }
                 .font(.system(size: 70))
+                .foregroundStyle(Color(red: 88/255, green: 154/255, blue: 141/255))
                 .padding()
                 
                 .toolbar {
@@ -44,6 +54,7 @@ struct FolderDetailView: View {
                         Text("\(folder.0)").font(.headline)
                     }
                 }
+            }
             }
             .sheet(isPresented: $showFileEditPage) {
                 FileEditPage { newFileName, newImage in

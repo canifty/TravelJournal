@@ -30,9 +30,9 @@ struct FolderAddButton: View {
                 }
                 // Toolbar with buttons for navigation and actions
                 .toolbar {
-//                    ToolbarItem(placement: .principal) {
-//                        Text("New Folder").font(.headline)
-//                    }
+                    ToolbarItem(placement: .principal) {
+                        Text("New Folder").font(.headline)
+                    }
                     ToolbarItem(placement: .topBarLeading) {
                         Button {
                             dismiss()
