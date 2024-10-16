@@ -11,18 +11,23 @@ struct ContentView: View {
     @State var showFolderSheet: Bool = false // State variable to control the display of the sheet for adding folders
     @State var dataArray: [(String, UIImage?)] = [] // Array to store folder names and their corresponding images
     @State var selectedFolder: (String, UIImage?)? = nil // To store the selected folder
-    
+    @State private var colorChange = false
     
     var body: some View {
         /*       Define the color constant
          let addColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1).
          */
-        let deviceBg = #colorLiteral(red: 0.9895064235, green: 0.9597768188, blue: 0.9473755956, alpha: 1)
+        //        let deviceBg = #colorLiteral(red: 0.9895064235, green: 0.9597768188, blue: 0.9473755956, alpha: 1)
         
         NavigationStack {
+         
             ZStack {
-                // Set the background color for the entire view
-                Color(deviceBg).ignoresSafeArea()
+                LinearGradient(
+                    gradient: Gradient(colors: [Color(red: 143/255, green: 193/255, blue: 181/255).opacity(1), Color.white]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                ).ignoresSafeArea()
+        
                 VStack {
                     //                    list to show folders with image and text
                     List(dataArray, id: \.0) { data in
@@ -67,7 +72,7 @@ struct ContentView: View {
                         showFolderSheet.toggle()
                     } label: {
                         Image(systemName: "plus.circle.fill")
-                    }.font(.system(size: 70))
+                    }.font(.system(size: 70)).foregroundStyle(Color(red: 88/255, green: 154/255, blue: 141/255))
                 }
             }
             .navigationTitle("My Journeys")
