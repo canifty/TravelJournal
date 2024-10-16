@@ -8,10 +8,13 @@ struct FolderAddButton: View {
     
     
     var body: some View {
-        let deviceBg = #colorLiteral(red: 0.9895064235, green: 0.9597768188, blue: 0.9473755956, alpha: 1)
         NavigationStack {
             ZStack {
-                Color(deviceBg).ignoresSafeArea()
+                LinearGradient(
+                    gradient: Gradient(colors: [Color(red: 143/255, green: 193/255, blue: 181/255).opacity(1), Color.white]),
+                    startPoint: .top,
+                    endPoint: .bottom
+                ).ignoresSafeArea()
                 VStack {
                     // TextField for entering the folder name
                     TextField("Placeholder", text: $texFieldText)
@@ -27,9 +30,9 @@ struct FolderAddButton: View {
                 }
                 // Toolbar with buttons for navigation and actions
                 .toolbar {
-                    ToolbarItem(placement: .principal) {
-                        Text("New Folder").font(.headline)
-                    }
+//                    ToolbarItem(placement: .principal) {
+//                        Text("New Folder").font(.headline)
+//                    }
                     ToolbarItem(placement: .topBarLeading) {
                         Button {
                             dismiss()

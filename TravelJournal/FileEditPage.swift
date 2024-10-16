@@ -36,7 +36,7 @@ struct FileEditPage: View {
                 .bold()
                 .padding(.vertical)
             
-            TextEditor(text: $userInput)
+            TextEditor( text: $userInput)
                 .frame(height: 150)
                 .padding()
             
@@ -70,7 +70,7 @@ struct FileEditPage: View {
                 }
 
                 Button(action: {
-                    print("Sound pressed")
+                   
                 }) {
                     Image(systemName: "waveform")
                         .font(.system(size: 24))
@@ -143,11 +143,7 @@ struct FileEditPage: View {
         func updateUIViewController(_ uiViewController: UIImagePickerController, context: Context) {}
     }
     
-    func saveData() {
-        // Logic to save data can go here
-        print("Data saved: \(userInput)")
-        print("Selected images: \(selectedImages.count)")
-    }
+    
 }
 
 struct FileEditPage_Previews: PreviewProvider {
