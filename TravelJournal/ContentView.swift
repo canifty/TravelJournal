@@ -14,13 +14,7 @@ struct ContentView: View {
     @State private var colorChange = false
     
     var body: some View {
-        /*       Define the color constant
-         let addColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1).
-         */
-        //        let deviceBg = #colorLiteral(red: 0.9895064235, green: 0.9597768188, blue: 0.9473755956, alpha: 1)
-        
         NavigationStack {
-         
             ZStack {
                 LinearGradient(
                     gradient: Gradient(colors: [Color(red: 143/255, green: 193/255, blue: 181/255).opacity(1), Color.white]),
@@ -31,6 +25,7 @@ struct ContentView: View {
                 VStack {
                     //                    list to show folders with image and text
                     List(dataArray, id: \.0) { data in
+                        
                         ZStack {
                             if let image = data.1 {
                                 Image(uiImage: image)
@@ -45,6 +40,8 @@ struct ContentView: View {
                                     .foregroundStyle(.gray.opacity(0.4))
                                     .cornerRadius(10)
                             }
+                            
+                            
                             Text(data.0)
                                 .font(.title)
                                 .foregroundStyle(.white).bold()
@@ -54,6 +51,8 @@ struct ContentView: View {
                         .onTapGesture {
                             selectedFolder = data  // Set the selected folder
                         }
+                        .listRowBackground(Color.clear)
+                        .listRowSeparator(.hidden)
                     }
                     .scrollContentBackground(.hidden)
                     .background(Color.clear)
