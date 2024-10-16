@@ -81,11 +81,12 @@ struct FileEditPage: View {
                     TextEditor(text: $userInput)
                         .frame(height: 150)
                         .padding()
-                    //                    TextField("Placeholder", text: $userInput)
-                    //                        .font(.subheadline)
+                    //  TextField("Placeholder", text: $userInput)
+                    // .font(.subheadline)
                     
                     // Integrating MoodButton from MoodButton file
                     MoodButton()
+                    
                 }
                 .padding()
             }

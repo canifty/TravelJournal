@@ -21,11 +21,9 @@ struct ContentView: View {
                     startPoint: .top,
                     endPoint: .bottom
                 ).ignoresSafeArea()
-        
                 VStack {
-                    //                    list to show folders with image and text
+                    // list to show folders with image and text
                     List(dataArray, id: \.0) { data in
-                        
                         ZStack {
                             if let image = data.1 {
                                 Image(uiImage: image)
@@ -40,8 +38,6 @@ struct ContentView: View {
                                     .foregroundStyle(.gray.opacity(0.4))
                                     .cornerRadius(10)
                             }
-                            
-                            
                             Text(data.0)
                                 .font(.title)
                                 .foregroundStyle(.white).bold()
