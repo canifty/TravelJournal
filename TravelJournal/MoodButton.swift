@@ -14,11 +14,11 @@ struct MoodButton: View {
     
     // Emotion options
     let emotions = ["😊", "😴", "😡", "🤔", "😢"]
-
+    
     var body: some View {
         VStack {
             Spacer()
-
+            
             // Show feedback after emotion selection
             if let emotion = selectedEmotion {
                 Text("\(emotion)")
@@ -79,7 +79,7 @@ struct MoodButton: View {
 struct EmotionBubbleView: View {
     var emotion: String
     var offset: CGSize
-
+    
     var body: some View {
         Text(emotion)
             .font(.largeTitle)

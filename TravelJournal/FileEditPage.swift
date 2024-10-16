@@ -5,10 +5,12 @@ struct FileEditPage: View {
     @State private var userInput = ""
     @State private var isShowingCamera = false
     @State private var isShowingPhotoLibrary = false
-    @State private var selectedImages: [UIImage] = [] // Array di immagini
+    @State private var selectedImages: [UIImage] = [] // Array of images
     @State private var isFavorite = false
     @Environment(\.presentationMode) var presentationMode
     
+    var onSave: (String, UIImage?) -> Void // Closure to handle save action
+
     var body: some View {
         VStack {
             HStack {
@@ -20,7 +22,9 @@ struct FileEditPage: View {
                 Spacer()
                 
                 Button("Done") {
-                    saveData()
+                    // Call onSave closure when user clicks Done
+                    let selectedImage = selectedImages.first // Use the first selected image
+                    onSave(userInput, selectedImage) // Pass back the input and image
                     presentationMode.wrappedValue.dismiss()
                 }
                 .padding(.trailing)
@@ -36,7 +40,7 @@ struct FileEditPage: View {
                 .frame(height: 150)
                 .padding()
             
-            // Mostra tutte le immagini selezionate
+            // Show all selected images
             if !selectedImages.isEmpty {
                 ScrollView(.horizontal, showsIndicators: false) {
                     HStack {
@@ -54,24 +58,24 @@ struct FileEditPage: View {
             
             Spacer()
             
-            // Barra inferiore con pulsanti
+            // Bottom bar with buttons
             HStack(spacing: 50) {
-                // Pulsante cuore
+                // Heart button
                 Button(action: {
-                    isFavorite.toggle() // Cambia lo stato del cuore
+                    isFavorite.toggle()
                 }) {
                     Image(systemName: isFavorite ? "heart.fill" : "heart")
                         .font(.system(size: 24))
                         .foregroundColor(isFavorite ? .red : .primary)
                 }
+
                 Button(action: {
-                        print("Suono premuto")
-                                    })
-                { Image(systemName: "waveform")
-                .font(.system(size: 24))
-                .foregroundColor(.primary)
-                                    }
-                                    
+                    print("Sound pressed")
+                }) {
+                    Image(systemName: "waveform")
+                        .font(.system(size: 24))
+                        .foregroundColor(.primary)
+                }
                 
                 Button(action: {
                     isShowingPhotoLibrary = true
@@ -84,7 +88,7 @@ struct FileEditPage: View {
                     ImagePicker(sourceType: .photoLibrary, selectedImages: $selectedImages)
                 }
                 
-                // Pulsante fotocamera
+                // Camera button
                 Button(action: {
                     isShowingCamera = true
                 }) {
@@ -101,10 +105,10 @@ struct FileEditPage: View {
         .padding()
     }
     
-    // Modifica ImagePicker per supportare array di immagini
+    // ImagePicker modified to support an array of images
     struct ImagePicker: UIViewControllerRepresentable {
         var sourceType: UIImagePickerController.SourceType
-        @Binding var selectedImages: [UIImage] // Cambiato per supportare un array di immagini
+        @Binding var selectedImages: [UIImage] // Changed to support an array of images
         
         class Coordinator: NSObject, UINavigationControllerDelegate, UIImagePickerControllerDelegate {
             let parent: ImagePicker
@@ -115,7 +119,7 @@ struct FileEditPage: View {
             
             func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
                 if let image = info[.originalImage] as? UIImage {
-                    parent.selectedImages.append(image) // Aggiungi l'immagine all'array
+                    parent.selectedImages.append(image) // Add the image to the array
                 }
                 picker.dismiss(animated: true)
             }
@@ -140,14 +144,14 @@ struct FileEditPage: View {
     }
     
     func saveData() {
-        // Logica per salvare i dati
-        print("Dati salvati: \(userInput)")
-        print("Immagini selezionate: \(selectedImages.count)")
+        // Logic to save data can go here
+        print("Data saved: \(userInput)")
+        print("Selected images: \(selectedImages.count)")
     }
-    
-    struct FileEditPage_Previews: PreviewProvider {
-        static var previews: some View {
-            FileEditPage()
-        }
+}
+
+struct FileEditPage_Previews: PreviewProvider {
+    static var previews: some View {
+        FileEditPage { _, _ in }
     }
 }

@@ -10,6 +10,7 @@ import SwiftUI
 struct ContentView: View {
     @State var showFolderSheet: Bool = false // State variable to control the display of the sheet for adding folders
     @State var dataArray: [(String, UIImage?)] = [] // Array to store folder names and their corresponding images
+    @State var selectedFolder: (String, UIImage?)? = nil // To store the selected folder
     
     
     var body: some View {
@@ -17,13 +18,13 @@ struct ContentView: View {
          let addColor = #colorLiteral(red: 1, green: 1, blue: 1, alpha: 1).
          */
         let deviceBg = #colorLiteral(red: 0.9895064235, green: 0.9597768188, blue: 0.9473755956, alpha: 1)
-          
+        
         NavigationStack {
             ZStack {
                 // Set the background color for the entire view
                 Color(deviceBg).ignoresSafeArea()
                 VStack {
-//                    list to show folders with image and text
+                    //                    list to show folders with image and text
                     List(dataArray, id: \.0) { data in
                         ZStack {
                             if let image = data.1 {
@@ -45,6 +46,9 @@ struct ContentView: View {
                                 .padding()
                                 .cornerRadius(10)
                         }
+                        .onTapGesture {
+                            selectedFolder = data  // Set the selected folder
+                        }
                     }
                     .scrollContentBackground(.hidden)
                     .background(Color.clear)
@@ -58,7 +62,7 @@ struct ContentView: View {
                             .padding()
                     }
                     
-//                    button to show the sheet for adding a new folder
+                    // Button to show the sheet for adding a new folder
                     Button {
                         showFolderSheet.toggle()
                     } label: {
@@ -67,6 +71,12 @@ struct ContentView: View {
                 }
             }
             .navigationTitle("My Journeys")
+            // Navigate to new view when a folder is selected
+            .navigationDestination(isPresented: .constant(selectedFolder != nil), destination: {
+                if let selectedFolder = selectedFolder {
+                    FolderDetailView(folder: selectedFolder)
+                }
+            })
         }
         // Show the FolderAddButton sheet to allow users to add a folder
         .sheet(isPresented: $showFolderSheet) {
