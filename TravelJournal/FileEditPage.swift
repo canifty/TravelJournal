@@ -131,7 +131,7 @@ struct FileEditPage: View {
                     .sheet(isPresented: $isShowingCamera) {
                         ImagePicker(sourceType: .camera, selectedImages: $selectedImages) // Show camera
                     }
-                }
+                }                
             }
         }
         
