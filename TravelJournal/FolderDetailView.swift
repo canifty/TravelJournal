@@ -32,6 +32,10 @@ struct FolderDetailView: View {
                                     .cornerRadius(10)
                             }
                             Text(file.0)
+                                .padding()
+                                .frame(width: 350, height: 50, alignment: .leading)
+                                .background(.gray.opacity(0.1))
+                                .cornerRadius(10)
                         }
                         .listRowBackground(Color.clear)
                         .listRowSeparator(.hidden)
