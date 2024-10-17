@@ -1,5 +1,6 @@
 import SwiftUI
 import UIKit
+import AVFoundation
 
 struct FileEditPage: View {
     @State private var userInput = ""
@@ -7,10 +8,14 @@ struct FileEditPage: View {
     @State private var isShowingPhotoLibrary = false
     @State private var selectedImages: [UIImage] = [] // Array of images
     @State private var isFavorite = false
+    @State private var isDocumentPickerPresented = false
+    @State private var audioPlayer: AVAudioPlayer?
+    
+    
     @Environment(\.presentationMode) var presentationMode
     
     var onSave: (String, UIImage?) -> Void // Closure to handle save action
-
+    
     var body: some View {
         VStack {
             HStack {
@@ -68,41 +73,52 @@ struct FileEditPage: View {
                         .font(.system(size: 24))
                         .foregroundColor(isFavorite ? .red : .primary)
                 }
-
+                
                 Button(action: {
-                    print("Sound pressed")
+                    isDocumentPickerPresented = true
                 }) {
                     Image(systemName: "waveform")
                         .font(.system(size: 24))
                         .foregroundColor(.primary)
                 }
+                .sheet(isPresented: $isDocumentPickerPresented) {
+                    DocumentPicker { url in
+                        if let url = url {
+                            playAudio(from: url)
+                            
+                            Button(action: {
+                                isShowingPhotoLibrary = true
+                            }) {
+                                Image(systemName: "photo.on.rectangle")
+                                    .font(.system(size: 24))
+                                    .foregroundColor(.primary)
+                            }
+                            .sheet(isPresented: $isShowingPhotoLibrary) {
+                                ImagePicker(sourceType: .photoLibrary, selectedImages: $selectedImages)
+                            }
+                            
+                            // Camera button
+                            Button(action: {
+                                isShowingCamera = true
+                            }) {
+                                Image(systemName: "camera")
+                                    .font(.system(size: 24))
+                                    .foregroundColor(.primary)
+                            }
+                            .sheet(isPresented: $isShowingCamera) {
+                                ImagePicker(sourceType: .camera, selectedImages: $selectedImages)
+                            }
+                        }
+                    }
+                    .padding(.bottom, 40)
+                    .padding()
+                }
                 
-                Button(action: {
-                    isShowingPhotoLibrary = true
-                }) {
-                    Image(systemName: "photo.on.rectangle")
-                        .font(.system(size: 24))
-                        .foregroundColor(.primary)
-                }
-                .sheet(isPresented: $isShowingPhotoLibrary) {
-                    ImagePicker(sourceType: .photoLibrary, selectedImages: $selectedImages)
-                }
-                
-                // Camera button
-                Button(action: {
-                    isShowingCamera = true
-                }) {
-                    Image(systemName: "camera")
-                        .font(.system(size: 24))
-                        .foregroundColor(.primary)
-                }
-                .sheet(isPresented: $isShowingCamera) {
-                    ImagePicker(sourceType: .camera, selectedImages: $selectedImages)
-                }
+
             }
-            .padding(.bottom, 40)
+
         }
-        .padding()
+
     }
     
     // ImagePicker modified to support an array of images
@@ -148,10 +164,18 @@ struct FileEditPage: View {
         print("Data saved: \(userInput)")
         print("Selected images: \(selectedImages.count)")
     }
+    
+    func playAudio(from url: URL) {
+        do {
+            audioPlayer = try AVAudioPlayer(contentsOf: url)
+            audioPlayer?.prepareToPlay()
+            audioPlayer?.play()
+        } catch {
+            print("Error playing audio: \(error.localizedDescription)")
+        }
+    }
 }
 
-struct FileEditPage_Previews: PreviewProvider {
-    static var previews: some View {
-        FileEditPage { _, _ in }
-    }
+#Preview {
+    FileEditPage { _, _ in }
 }
