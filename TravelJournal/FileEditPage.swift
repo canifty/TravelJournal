@@ -71,9 +71,10 @@ struct FileEditPage: View {
                     
                     // Text input
                     TextEditor(text: $userInput)
-                        .frame(height: 250)
+                        .frame(height: 330)
                         .padding()
-                        .background(Color.green.opacity(0.2).cornerRadius(10))
+                        .background(Color.green.opacity(0.1).cornerRadius(10))
+                        .scrollContentBackground(.hidden)
                     Spacer()
 
                 }
