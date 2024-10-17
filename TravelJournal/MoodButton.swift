@@ -3,25 +3,21 @@ import SwiftUI
 struct MoodButton: View {
     @State private var isExpanded = false  // To toggle the bubble expansion
     @State private var selectedEmotion: String?  // To store the selected emotion
-    @State private var shakeEmojis: [Bool] = [true, true, true, true, true]  // Track shaking state for each emoji
-    @State private var showMoodText = true  // Track visibility of the "Choose Your Mood" text
-    
+    @State private var vibrateEmojis: [Bool] = [false, false, false, false, false]  // Track vibration state for each emoji
+    @State private var showMoodText = true
     // Emotion options
     let emotions = ["😊", "😴", "😡", "🤔", "😢"]
     
     var body: some View {
         VStack {
             Spacer()
-            
-            // Show the "Choose Your Mood" text if no emotion is selected
             if showMoodText {
-                Text("Choose Your Mood")
-//                    .font(.subheadline)
-                    .padding(.bottom)
-                    .foregroundStyle(.gray)
-                    .transition(.opacity)  // Add transition for smooth disappearance
-            }
-
+                           Text("Choose Your Mood")
+                    .font(.subheadline)
+                               .padding(.bottom)
+                               .foregroundStyle(.gray)
+                               .transition(.opacity)  // Add transition for smooth disappearance
+                       }
             // The floating mood bubble button or selected emoji
             VStack {
                 // Background bubbles for emotion options
@@ -29,13 +25,18 @@ struct MoodButton: View {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
                             ForEach(0..<emotions.count, id: \.self) { index in
-                                EmotionBubbleView(emotion: emotions[index], isShaking: $shakeEmojis[index])
+                                EmotionBubbleView(emotion: emotions[index], isVibrating: $vibrateEmojis[index])
                                     .onTapGesture {
                                         withAnimation {
                                             selectedEmotion = emotions[index]
                                             isExpanded = false  // Collapse after selection
-                                            shakeEmojis[index] = false // Stop shaking for the selected emoji
-                                            showMoodText = false // Hide the text after selection
+                                        }
+                                    }
+                                    .onAppear {
+                                        vibrateEmojis[index] = true // Start vibration when the emoji appears
+                                        // Stop vibrating after a short duration
+                                        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                                            vibrateEmojis[index] = false
                                         }
                                     }
                             }
@@ -83,8 +84,8 @@ struct MoodButton: View {
 // View for the emotion bubble
 struct EmotionBubbleView: View {
     var emotion: String
-    @Binding var isShaking: Bool  // Binding to control the shaking state
-    
+    @Binding var isVibrating: Bool  // Binding to control the vibration state
+
     var body: some View {
         Text(emotion)
             .font(.largeTitle)
@@ -92,8 +93,9 @@ struct EmotionBubbleView: View {
             .background(Color.pink.opacity(0.8))
             .clipShape(Circle())
             .shadow(radius: 5)
-            .offset(x: isShaking ? -5 : 5)  // Shake effect by changing horizontal offset
-            .animation(isShaking ? Animation.linear(duration: 0.1).repeatForever(autoreverses: true) : .default) // Repeat shaking animation
+            .scaleEffect(isVibrating ? 1.1 : 1.0) // Scale effect for vibration
+            .animation(isVibrating ? Animation.default.repeatForever(autoreverses: true) : .default) // Repeat animation for vibration
+            .animation(.spring())  // Bouncing effect
     }
 }
 
