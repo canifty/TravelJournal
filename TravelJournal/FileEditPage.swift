@@ -77,14 +77,11 @@ struct FileEditPage: View {
                             .padding()
                         }
                     }
-                    
                     TextEditor(text: $userInput)
                         .frame(height: 150)
                         .padding()
-                    //  TextField("Placeholder", text: $userInput)
-                    // .font(.subheadline)
-                    
-                    // Integrating MoodButton from MoodButton file
+                        .background(Color.green.opacity(0.2).cornerRadius(10))
+               
                     MoodButton()
                     
                 }
@@ -118,6 +115,11 @@ struct FileEditPage: View {
                     }
                     .sheet(isPresented: $isShowingPhotoLibrary) {
                         ImagePicker(sourceType: .photoLibrary, selectedImages: $selectedImages)
+                    }
+                }
+                ToolbarItem(placement: .bottomBar) {
+                    Button {
+                        
                     }
                 }
                 ToolbarItem(placement: .bottomBar) {

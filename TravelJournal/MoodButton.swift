@@ -1,16 +1,8 @@
-//
-//  MoodButton.swift
-//  TravelJournal
-//
-//  Created by Ipek Erten on 15/10/24.
-//
-
 import SwiftUI
 
 struct MoodButton: View {
     @State private var isExpanded = false  // To toggle the bubble expansion
     @State private var selectedEmotion: String?  // To store the selected emotion
-    @State private var showFeedback = false  // To show feedback after selection
     
     // Emotion options
     let emotions = ["😊", "😴", "😡", "🤔", "😢"]
@@ -19,19 +11,7 @@ struct MoodButton: View {
         VStack {
             Spacer()
             
-            // Show feedback after emotion selection
-            if let emotion = selectedEmotion {
-                Text("\(emotion)")
-                    .font(.largeTitle)
-                    .padding()
-                    .background(Color.green.opacity(0.2))
-                    .cornerRadius(10)
-                    .transition(.scale)
-            }
-            
-            Spacer()
-            
-            // The floating mood bubble button
+            // The floating mood bubble button or selected emoji
             ZStack {
                 // Background bubbles for emotion options
                 if isExpanded {
@@ -41,25 +21,41 @@ struct MoodButton: View {
                                 withAnimation {
                                     selectedEmotion = emotions[index]
                                     isExpanded = false  // Collapse after selection
-                                    showFeedback = true
                                 }
                             }
                     }
                 }
                 
-                // Main mood button
-                Button(action: {
-                    withAnimation {
-                        isExpanded.toggle()  // Toggle expand/collapse
-                    }
-                }) {
-                    Text("🌈")
+                // Main mood button or selected emoji
+                if let emotion = selectedEmotion {
+                    // Show selected emotion
+                    Text(emotion)
                         .font(.largeTitle)
                         .padding()
                         .background(Color.blue)
                         .foregroundColor(.white)
                         .clipShape(Circle())
                         .shadow(radius: 5)
+                        .onTapGesture {
+                            withAnimation {
+                                isExpanded.toggle()  // Toggle expand/collapse
+                            }
+                        }
+                } else {
+                    // Show rainbow button if no emotion is selected
+                    Button(action: {
+                        withAnimation {
+                            isExpanded.toggle()  // Toggle expand/collapse
+                        }
+                    }) {
+                        Text("🌈")
+                            .font(.largeTitle)
+                            .padding()
+                            .background(Color.blue)
+                            .foregroundColor(.white)
+                            .clipShape(Circle())
+                            .shadow(radius: 5)
+                    }
                 }
             }
             .padding(.bottom, 40)  // Position above the bottom edge
@@ -92,12 +88,8 @@ struct EmotionBubbleView: View {
     }
 }
 
-
-
 struct MoodButton_Previews: PreviewProvider {
     static var previews: some View {
         MoodButton()
     }
 }
-
-
