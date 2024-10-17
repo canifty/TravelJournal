@@ -67,7 +67,8 @@ struct ContentView: View {
                         showFolderSheet.toggle()
                     } label: {
                         Image(systemName: "plus.circle.fill")
-                    }.font(.system(size: 70)).foregroundStyle(Color(red: 88/255, green: 154/255, blue: 141/255))
+                    }.font(.system(size: 70))
+                        .foregroundStyle(Color(red: 88/255, green: 154/255, blue: 141/255))
                 }
             }
             .navigationTitle("My Journeys")
