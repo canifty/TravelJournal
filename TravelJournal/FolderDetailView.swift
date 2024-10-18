@@ -78,10 +78,14 @@ struct FolderDetailView: View {
                     selectedFile = nil // Clear selected file for new creation
                     showFileEditPage.toggle()
                 } label: {
-                    Image(systemName: "plus.circle.fill")
+                    Label("Add File", systemImage: "plus.circle.fill")
+                        .font(.title)
+                        .padding()
+                        .foregroundColor(.white)
+                        .background(Color(red: 88/255, green: 154/255, blue: 141/255))
+                        .cornerRadius(10)
+                        .shadow(radius: 4)
                 }
-                .font(.system(size: 70))
-                .foregroundStyle(Color(red: 88/255, green: 154/255, blue: 141/255))
                 .padding()
                 .toolbar {
                     ToolbarItem(placement: .principal) {
@@ -93,7 +97,7 @@ struct FolderDetailView: View {
         .sheet(isPresented: $showFileEditPage) {
             if let fileToEdit = selectedFile {
                 // Edit existing file
-                FileEditPage(texFieldText: fileToEdit.0, userInput: fileToEdit.1, selectedImages: [IdentifiableImage(image: fileToEdit.2!)].compactMap { $0 }) { updatedTitle, updatedText, updatedImage in
+                FileEditPage(texFieldText: fileToEdit.0, userInput: fileToEdit.1, selectedImages: fileToEdit.2 != nil ? [IdentifiableImage(image: fileToEdit.2!)] : []) { updatedTitle, updatedText, updatedImage in
                     if let index = dataArray.firstIndex(where: { $0.0 == fileToEdit.0 }) {
                         dataArray[index] = (updatedTitle, updatedText, updatedImage)
                     }
@@ -107,6 +111,7 @@ struct FolderDetailView: View {
         }
     }
 }
+
 #Preview {
     FolderDetailView(folder: ("My Folder", nil))
 }

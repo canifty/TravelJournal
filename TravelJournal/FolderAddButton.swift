@@ -3,9 +3,8 @@ import SwiftUI
 struct FolderAddButton: View {
     @State var texFieldText: String = "" // State variable for the text field input
     @State var selectedImage: UIImage?
-    var onAdd: (String, UIImage?) -> Void // closure to pass back the new text
+    var onAdd: (String, UIImage?) -> Void // Closure to pass back the new text
     @Environment(\.dismiss) var dismiss // Environment variable to dismiss the sheet
-    
     
     var body: some View {
         NavigationStack {
@@ -15,45 +14,48 @@ struct FolderAddButton: View {
                     startPoint: .top,
                     endPoint: .bottom
                 ).ignoresSafeArea()
-                VStack {
+                
+                VStack(spacing: 20) {
                     // TextField for entering the folder name
-                    TextField("Placeholder", text: $texFieldText)
+                    TextField("Folder Name", text: $texFieldText)
                         .padding()
-                        .background(Color.gray.opacity(0.4).cornerRadius(10))
-                        .frame(maxWidth: 380)
+                        .background(Color.white.opacity(0.8))
+                        .cornerRadius(10)
+                        .shadow(radius: 5)
+                        .padding(.horizontal)
+                    
                     // Include the AddImage view to upload images
                     AddImage(selectedImage: $selectedImage)
                         .padding()
-                        .buttonBorderShape(.roundedRectangle)
-                        .background(Color.gray.opacity(0.4).cornerRadius(10))
+                        .background(Color.white.opacity(0.8))
+                        .cornerRadius(10)
+                        .shadow(radius: 5)
+                    
                     Spacer()
                 }
+                .padding()
+                
                 // Toolbar with buttons for navigation and actions
                 .toolbar {
-                    ToolbarItem(placement: .principal) {
-                        Text("New Folder").font(.headline)
-                    }
-                    ToolbarItem(placement: .topBarLeading) {
-                        Button {
+                    ToolbarItem(placement: .navigationBarLeading) {
+                        Button("Cancel") {
                             dismiss()
-                        } label: {
-                            Text("Cancel")
                         }
                     }
-                    ToolbarItem(placement: .topBarTrailing) {
-                        Button {
+                    ToolbarItem(placement: .navigationBarTrailing) {
+                        Button("Create") {
                             onAdd(texFieldText, selectedImage)  // Call the closure with the folder name and dismiss
                             dismiss()
-                            // saveText()
-                        } label: {
-                            Text("Done").bold()
                         }
+                        .bold()
+                        .foregroundColor(.blue)
                     }
                 }
             }
         }
     }
 }
+
 #Preview {
-    FolderAddButton {_, _ in }
+    FolderAddButton { _, _ in }
 }

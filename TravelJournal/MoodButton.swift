@@ -2,12 +2,11 @@ import SwiftUI
 
 struct MoodButton: View {
     @State private var isExpanded = false  // To toggle the bubble expansion
-    @State private var selectedEmotion: String?  // To store the selected emotion
-    @State private var vibrateEmojis: [Bool] = [false, false, false, false, false]  // Track vibration state for each emoji
+    @State private var selectedImage: String?  // To store the selected emotion
+    @State private var vibrateImages: [Bool] = [false, false, false, false, false]  // Track vibration state for each emoji
     @State private var showMoodText = true
     // Emotion options
-    let emotions = ["😊", "😴", "😡", "🤔", "😢"]
-    
+    let images = ["1.l", "2.u", "3.m", "4.i"]
     var body: some View {
         VStack {
             Spacer()
@@ -24,19 +23,19 @@ struct MoodButton: View {
                 if isExpanded {
                     ScrollView(.horizontal, showsIndicators: false) {
                         HStack {
-                            ForEach(0..<emotions.count, id: \.self) { index in
-                                EmotionBubbleView(emotion: emotions[index], isVibrating: $vibrateEmojis[index])
+                            ForEach(0..<images.count, id: \.self) { index in
+                                EmotionBubbleView(imageName: images[index], isVibrating: $vibrateImages[index])
                                     .onTapGesture {
                                         withAnimation {
-                                            selectedEmotion = emotions[index]
+                                            selectedImage = images[index]
                                             isExpanded = false  // Collapse after selection
                                         }
                                     }
                                     .onAppear {
-                                        vibrateEmojis[index] = true // Start vibration when the emoji appears
+                                        vibrateImages[index] = true // Start vibration when the emoji appears
                                         // Stop vibrating after a short duration
                                         DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                                            vibrateEmojis[index] = false
+                                            vibrateImages[index] = false
                                         }
                                     }
                             }
@@ -46,9 +45,11 @@ struct MoodButton: View {
                 }
                 
                 // Main mood button or selected emoji
-                if let emotion = selectedEmotion {
+                if let selected = selectedImage {
                     // Show selected emotion
-                    Text(emotion)
+                    Image(selected)
+                        .resizable()
+                        .frame(width: 50, height: 50)
                         .font(.largeTitle)
                         .padding()
                         .background(Color.blue)
@@ -83,14 +84,17 @@ struct MoodButton: View {
 
 // View for the emotion bubble
 struct EmotionBubbleView: View {
-    var emotion: String
+    var imageName: String
     @Binding var isVibrating: Bool  // Binding to control the vibration state
 
     var body: some View {
-        Text(emotion)
+        Image(imageName)
+            
+            .resizable()
+            .frame(width: 50, height: 50)
             .font(.largeTitle)
             .padding()
-            .background(Color.pink.opacity(0.8))
+            .background(Color.yellow.opacity(0.8))
             .clipShape(Circle())
             .shadow(radius: 5)
             .scaleEffect(isVibrating ? 1.1 : 1.0) // Scale effect for vibration
