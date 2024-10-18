@@ -24,6 +24,8 @@ struct FileEditPage: View {
     @State var isShowingPhotoLibrary = false
     @State var selectedImages: [IdentifiableImage] = [] // Array of IdentifiableImage
     @State var fullScreenImage: IdentifiableImage? = nil // To track the full-screen image
+    @State private var startDate: Date = Date() // Data di inizio iniziale
+    @State private var endDate: Date = Calendar.current.date(byAdding: .day, value: 7, to: Date())! // Data di fine iniziale
     @Environment(\.presentationMode) var presentationMode
     
     var onSave: (String, UIImage?) -> Void // Closure to handle save action
@@ -77,17 +79,24 @@ struct FileEditPage: View {
                             .padding()
                         }
                     }
+                    
+                    // TextEditor for user input
                     TextEditor(text: $userInput)
                         .frame(height: 150)
                         .padding()
                         .background(Color.green.opacity(0.2).cornerRadius(10))
-               
+                    
+                    // Vista personalizzata per la selezione dell'intervallo di date
+                    DateSelectionView(startDate: $startDate, endDate: $endDate)
+                    
+                    // MoodButton from external file
                     MoodButton()
                     
                 }
                 .padding()
             }
             .toolbar {
+                // Leading cancel button
                 ToolbarItem(placement: .topBarLeading) {
                     Button {
                         presentationMode.wrappedValue.dismiss()
@@ -95,6 +104,7 @@ struct FileEditPage: View {
                         Text("Cancel")
                     }
                 }
+                // Trailing create button
                 ToolbarItem(placement: .topBarTrailing) {
                     Button {
                         // Call onSave closure when user clicks Done
@@ -105,6 +115,8 @@ struct FileEditPage: View {
                         Text("Create").bold()
                     }
                 }
+                
+                // Photo Library button
                 ToolbarItem(placement: .bottomBar) {
                     Button {
                         isShowingPhotoLibrary = true
@@ -117,11 +129,8 @@ struct FileEditPage: View {
                         ImagePicker(sourceType: .photoLibrary, selectedImages: $selectedImages)
                     }
                 }
-                ToolbarItem(placement: .bottomBar) {
-                    Button {
-                        
-                    }
-                }
+                
+                // Camera button
                 ToolbarItem(placement: .bottomBar) {
                     Button {
                         isShowingCamera = true
@@ -133,7 +142,7 @@ struct FileEditPage: View {
                     .sheet(isPresented: $isShowingCamera) {
                         ImagePicker(sourceType: .camera, selectedImages: $selectedImages) // Show camera
                     }
-                }                
+                }
             }
         }
         
@@ -142,6 +151,65 @@ struct FileEditPage: View {
             FullScreenImageView(image: identifiableImage.image) {
                 fullScreenImage = nil // Close the full screen
             }
+        }
+    }
+    
+    // DateSelectionView per la selezione dell'intervallo di date con un solo DatePicker
+    struct DateSelectionView: View {
+        @Binding var startDate: Date
+        @Binding var endDate: Date
+        @State private var isDatePickerVisible = false
+        @State private var selectingStartDate = true // Controlla se si sta selezionando la data di inizio
+
+        var body: some View {
+            VStack {
+                // Pulsante per aprire il foglio modale per selezionare le date
+                Button(action: {
+                    isDatePickerVisible.toggle()
+                    selectingStartDate = true // Imposta la selezione iniziale sulla data di inizio
+                }) {
+                    HStack {
+                        Text("Select Date Range:")
+                            .foregroundColor(.primary)
+                        Spacer()
+                        Text("\(startDate, formatter: dateFormatter) - \(endDate, formatter: dateFormatter)")
+                            .foregroundColor(.secondary)
+                    }
+                    .padding()
+                    .background(Color.green.opacity(0.2).cornerRadius(10))
+                }
+                .sheet(isPresented: $isDatePickerVisible) {
+                    VStack {
+                        Text(selectingStartDate ? "Select Start Date" : "Select End Date")
+                            .font(.headline)
+                            .padding()
+
+                        // DatePicker singolo per selezionare la data
+                        DatePicker("", selection: selectingStartDate ? $startDate : $endDate, displayedComponents: .date)
+                            .datePickerStyle(GraphicalDatePickerStyle())
+                            .padding()
+
+                        // Pulsante per alternare tra la selezione della data di inizio e di fine
+                        Button(selectingStartDate ? "Next: Select End Date" : "Finish") {
+                            if selectingStartDate {
+                                selectingStartDate = false // Passa alla selezione della data di fine
+                            } else {
+                                isDatePickerVisible = false // Chiudi il foglio modale dopo aver selezionato la data di fine
+                            }
+                        }
+                        .padding()
+                    }
+                    .presentationDetents([.fraction(0.5), .medium]) // Imposta un'altezza intermedia per il foglio modale
+                }
+            }
+        }
+
+        // Formatter per la data
+        private var dateFormatter: DateFormatter {
+            let formatter = DateFormatter()
+            formatter.dateStyle = .medium
+            formatter.timeStyle = .none
+            return formatter
         }
     }
     
@@ -168,7 +236,7 @@ struct FileEditPage: View {
                 picker.dismiss(animated: true)
             }
         }
-        
+         
         func makeCoordinator() -> Coordinator {
             Coordinator(parent: self)
         }
